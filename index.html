@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f5f6f3">
+  <meta name="description" content="A simple, private calendar tracker that works offline.">
+  <title>MarkDays</title>
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" href="./icons/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./css/style.css">
+  <script src="./js/storage.js" defer></script>
+  <script src="./js/calendar.js" defer></script>
+  <script src="./js/csv.js" defer></script>
+  <script src="./js/app.js" defer></script>
+</head>
+<body>
+  <main class="app-shell">
+    <header class="app-header">
+      <a class="brand" href="./" aria-label="MarkDays home">
+        <span class="brand-mark" aria-hidden="true">✓</span>
+        <span>MarkDays</span>
+      </a>
+      <span class="privacy-note">Your calendars stay on this device</span>
+    </header>
+
+    <section id="error-message" class="notice error-notice" role="alert" hidden></section>
+    <section id="status-message" class="notice status-notice" role="status" aria-live="polite" hidden></section>
+
+    <section class="calendar-card" aria-labelledby="calendar-name">
+      <div class="calendar-toolbar">
+        <div class="calendar-identity">
+          <label class="visually-hidden" for="calendar-select">Choose a calendar</label>
+          <select id="calendar-select" aria-label="Choose a calendar"></select>
+          <div class="manage-actions">
+            <button id="add-calendar" class="text-button" type="button">＋ New</button>
+            <button id="rename-calendar" class="icon-button" type="button" aria-label="Rename calendar" title="Rename calendar">✎</button>
+            <button id="delete-calendar" class="icon-button danger-button" type="button" aria-label="Delete calendar" title="Delete calendar">⌫</button>
+          </div>
+        </div>
+        <div class="month-navigation" aria-label="Calendar navigation">
+          <button id="previous-month" class="nav-button" type="button" aria-label="Previous month">‹</button>
+          <h1 id="month-heading" aria-live="polite"></h1>
+          <button id="next-month" class="nav-button" type="button" aria-label="Next month">›</button>
+          <button id="today-button" class="today-button" type="button">Today</button>
+        </div>
+      </div>
+
+      <div class="weekday-row" aria-hidden="true">
+        <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+      </div>
+      <div id="calendar-grid" class="calendar-grid" role="grid" aria-labelledby="month-heading"></div>
+
+      <p class="interaction-hint">Tap a day to toggle ✓ · Long-press or right-click for more symbols</p>
+    </section>
+
+    <section class="stats-section" aria-labelledby="stats-heading">
+      <h2 id="stats-heading" class="visually-hidden">Calendar statistics</h2>
+      <div class="stat-card"><span class="stat-label">All time</span><strong id="stat-all">0</strong><span class="stat-unit">marked days</span></div>
+      <div class="stat-card"><span class="stat-label">This year</span><strong id="stat-year">0</strong><span class="stat-unit">marked days</span></div>
+      <div class="stat-card"><span class="stat-label">This month</span><strong id="stat-month">0</strong><span class="stat-unit">marked days</span></div>
+    </section>
+
+    <section class="data-tools" aria-label="Import and export">
+      <div>
+        <h2>Keep a backup</h2>
+        <p>Data is stored in this browser only. Export a CSV regularly so you can restore it later.</p>
+      </div>
+      <div class="data-actions">
+        <button id="import-button" class="secondary-button" type="button">Import CSV</button>
+        <button id="export-button" class="primary-button" type="button">Export CSV</button>
+        <input id="import-file" type="file" accept=".csv,text/csv" hidden>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="symbol-dialog" class="symbol-dialog">
+    <form method="dialog">
+      <div class="dialog-heading">
+        <div><p class="eyebrow">MARK THIS DAY</p><h2 id="symbol-date-heading"></h2></div>
+        <button class="dialog-close" value="cancel" aria-label="Close">×</button>
+      </div>
+      <p class="dialog-copy">Choose one symbol for this date, or remove its mark.</p>
+      <div id="symbol-options" class="symbol-options">
+        <button type="button" data-symbol="✓" aria-label="Set symbol ✓">✓<span>✓</span></button>
+        <button type="button" data-symbol="✕" aria-label="Set symbol ✕">✕<span>✕</span></button>
+        <button type="button" data-symbol="★" aria-label="Set symbol ★">★<span>★</span></button>
+        <button type="button" data-symbol="○" aria-label="Set symbol ○">○<span>○</span></button>
+        <button type="button" data-symbol="—" aria-label="Set symbol —">—<span>—</span></button>
+      </div>
+      <button id="remove-mark" class="remove-mark" type="button">Remove mark</button>
+    </form>
+  </dialog>
+
+  <dialog id="calendar-dialog" class="calendar-dialog">
+    <form>
+      <div class="dialog-heading">
+        <div><p class="eyebrow">CALENDAR</p><h2 id="calendar-dialog-title"></h2></div>
+        <button class="dialog-close" type="button" data-close-calendar-dialog aria-label="Close">×</button>
+      </div>
+      <p id="calendar-dialog-copy" class="dialog-copy"></p>
+      <label id="calendar-name-label" class="field-label" for="calendar-name-input">Calendar name</label>
+      <input id="calendar-name-input" class="text-input" type="text" maxlength="120" autocomplete="off">
+      <p id="calendar-dialog-error" class="field-error" role="alert" hidden></p>
+      <div class="dialog-actions">
+        <button class="secondary-button" type="button" data-close-calendar-dialog>Cancel</button>
+        <button id="calendar-dialog-submit" class="primary-button" type="button"></button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="import-dialog" class="import-dialog">
+    <form method="dialog">
+      <div class="dialog-heading">
+        <div><p class="eyebrow">CSV IMPORT</p><h2>Review your data</h2></div>
+        <button class="dialog-close" value="cancel" aria-label="Close">×</button>
+      </div>
+      <div id="import-summary" class="import-summary"></div>
+      <fieldset class="import-mode">
+        <legend>How should this file be applied?</legend>
+        <label><input type="radio" name="import-mode" value="merge" checked> <span><strong>Merge</strong><small>Keep existing data. Match calendars by name when unambiguous; matching date conflicts follow the choice below.</small></span></label>
+        <label><input type="radio" name="import-mode" value="replace"> <span><strong>Replace all data</strong><small>Remove all current calendars and marks, then restore only what is in this file.</small></span></label>
+      </fieldset>
+      <fieldset id="conflict-options" class="import-mode">
+        <legend>When a date already has a mark</legend>
+        <label><input type="radio" name="conflict-mode" value="keep" checked> <span><strong>Keep existing mark</strong></span></label>
+        <label><input type="radio" name="conflict-mode" value="imported"> <span><strong>Use imported mark</strong></span></label>
+      </fieldset>
+      <p class="import-explanation">The whole file is validated before any changes are made. Merge creates a separate calendar if multiple existing calendars share an imported name. Replace requires an additional confirmation.</p>
+      <div class="dialog-actions">
+        <button class="secondary-button" value="cancel">Cancel</button>
+        <button id="apply-import" class="primary-button" type="button">Apply import</button>
+      </div>
+    </form>
+  </dialog>
+
+  <footer class="app-footer">A small tracker, just for you.</footer>
+</body>
+</html>

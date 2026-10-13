@@ -1,0 +1,19 @@
+{
+  "name": "MarkDays",
+  "short_name": "MarkDays",
+  "description": "A simple, private calendar tracker that works offline.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#f5f6f3",
+  "background_color": "#f5f6f3",
+  "icons": [
+    {
+      "src": "./icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
