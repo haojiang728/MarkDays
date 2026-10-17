@@ -95,6 +95,8 @@
   function parseImport(text) {
     const rows = parseCSV(text);
     if (rows.length < 1) throw new Error("The file is empty.");
+    const now = new Date();
+    const today = `${String(now.getFullYear()).padStart(4, "0")}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
     const headers = rows[0].map(header => header.trim().toLowerCase());
     const required = ["calendar", "date", "symbol", "note"];
     const indexes = required.map(header => headers.indexOf(header));
@@ -118,6 +120,7 @@
         continue;
       }
       if (!validateDateKey(date)) throw new Error(`Row ${rowIndex + 1} has an invalid date. Use a real date in YYYY-MM-DD format.`);
+      if (date > today) throw new Error(`Row ${rowIndex + 1} contains a future date. Future days cannot be marked.`);
       if (!symbol) throw new Error(`Row ${rowIndex + 1} is missing a symbol.`);
       if (Object.prototype.hasOwnProperty.call(calendar.marks, date)) {
         throw new Error(`Row ${rowIndex + 1} repeats ${date} for calendar "${name}".`);

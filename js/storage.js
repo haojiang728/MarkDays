@@ -59,6 +59,13 @@
     return day >= 1 && day <= monthLengths[month - 1];
   }
 
+  function localDateKey(date) {
+    const year = String(date.getFullYear()).padStart(4, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
+
   function copyCalendar(calendar) {
     return { ...calendar, marks: { ...(calendar.marks || {}) } };
   }
@@ -142,6 +149,7 @@
     if (symbol !== null && (typeof symbol !== "string" || !symbol.trim())) {
       throw new Error("A mark must contain a non-empty symbol.");
     }
+    if (symbol !== null && date > localDateKey(new Date())) throw new Error("Future days cannot be marked.");
     const db = await openDatabase();
     const tx = db.transaction("calendars", "readwrite");
     const store = tx.objectStore("calendars");
@@ -172,6 +180,13 @@
   }
 
   async function importCalendars(calendars, selectedId) {
+    const today = localDateKey(new Date());
+    for (const calendar of calendars) {
+      for (const date of Object.keys(calendar.marks || {})) {
+        if (!isValidDateKey(date)) throw new Error("Imported marks must use real dates in YYYY-MM-DD format.");
+        if (date > today) throw new Error("Imported data cannot contain marks for future days.");
+      }
+    }
     const db = await openDatabase();
     const tx = db.transaction(["calendars", "settings"], "readwrite");
     const store = tx.objectStore("calendars");

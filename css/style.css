@@ -93,6 +93,9 @@ button:focus-visible, select:focus-visible, input:focus-visible {
   -webkit-tap-highlight-color: transparent;
 }
 .day-cell:hover { background: #f6f8f6; }
+.day-cell:disabled { cursor: not-allowed; color: #b2bbb6; }
+.day-cell:disabled:hover { background: transparent; }
+.day-cell.future.marked { cursor: pointer; }
 .day-cell.adjacent { color: #b2bbb6; }
 .day-number { display: grid; place-items: center; min-width: 27px; height: 27px; border-radius: 50%; font-size: 13px; }
 .day-cell.today .day-number { color: white; background: var(--green); font-weight: 700; }
@@ -140,6 +143,7 @@ dialog form { margin: 0; }
 .symbol-options { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 17px 0; }
 .symbol-options button { min-height: 58px; border: 1px solid var(--line); border-radius: 12px; background: #fbfcfb; color: var(--ink); font-size: 22px; }
 .symbol-options button:hover { border-color: #9bc4ad; background: var(--green-pale); }
+.symbol-options button:disabled { cursor: not-allowed; opacity: .4; }
 .symbol-options span { display: none; }
 .remove-mark { width: 100%; min-height: 42px; border: 1px solid #f0d6d3; border-radius: 10px; background: white; color: var(--red); font-size: 13px; font-weight: 620; }
 .remove-mark:disabled { opacity: .45; cursor: not-allowed; }

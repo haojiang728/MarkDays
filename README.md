@@ -19,15 +19,15 @@ Publish the project directory as a static site. All app links are relative, so i
 ## Track and back up data
 
 - The first launch creates **My Calendar**. Use **New**, the rename button, and the delete button to manage independent calendars.
-- Tap a day to toggle ✓. Long-press on touch devices or right-click on desktop to pick another symbol or remove a mark.
+- Sunday is the first day of each calendar week. Tap a past or current day to toggle ✓; future days cannot be marked. Long-press on touch devices or right-click on desktop to pick another symbol or remove a mark.
 - Export CSV regularly. MarkDays stores data only in this browser; clearing browser data, changing browser profiles, or losing the device can remove it. IndexedDB is not cloud backup.
-- Import accepts UTF-8 CSV with `Calendar,Date,Symbol,Note` columns. It validates the complete file before previewing.
+- Import accepts UTF-8 CSV with `Calendar,Date,Symbol,Note` columns. It validates the complete file before previewing and rejects future-dated marks.
 - **Merge** preserves current data, matches a calendar by name only if that name identifies exactly one current calendar, and lets you choose whether imported marks replace date conflicts. If legacy data contains duplicate names, the import creates a separately named `(... imported)` calendar rather than guessing which one to change. **Replace all data** clears current calendars only after explicit confirmation.
 - Notes from an imported CSV are preserved and re-exported. The v1 interface does not yet provide note editing.
 
 ## Offline and icons
 
-The service worker caches the application shell; user data remains in IndexedDB. Increment `CACHE_NAME` in `service-worker.js` when changing cached application assets. The icon is supplied as SVG, which is supported by modern browsers. Some platform install prompts prefer 192×192 and 512×512 PNG icons; PNGs can be generated from `icons/icon.svg` if required by a target store or device.
+The service worker caches the application shell and its PNG icons; user data remains in IndexedDB. Increment `CACHE_NAME` in `service-worker.js` when changing cached application assets. The 192×192 and 512×512 icons are used by the web app manifest, and `apple-touch-icon.png` is used for Apple devices.
 
 ## Known limitations
 

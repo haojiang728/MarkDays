@@ -7,7 +7,8 @@
   <meta name="description" content="A simple, private calendar tracker that works offline.">
   <title>MarkDays</title>
   <link rel="manifest" href="./manifest.json">
-  <link rel="icon" href="./icons/icon.svg" type="image/svg+xml">
+  <link rel="icon" href="./icons/icon-192.png" type="image/png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
   <link rel="stylesheet" href="./css/style.css">
   <script src="./js/storage.js" defer></script>
   <script src="./js/calendar.js" defer></script>
@@ -19,7 +20,7 @@
     <header class="app-header">
       <a class="brand" href="./" aria-label="MarkDays home">
         <span class="brand-mark" aria-hidden="true">✓</span>
-        <span>MarkDays</span>
+        <span>Mark Days</span>
       </a>
       <span class="privacy-note">Your calendars stay on this device</span>
     </header>
@@ -35,19 +36,19 @@
           <div class="manage-actions">
             <button id="add-calendar" class="text-button" type="button">＋ New</button>
             <button id="rename-calendar" class="icon-button" type="button" aria-label="Rename calendar" title="Rename calendar">✎</button>
-            <button id="delete-calendar" class="icon-button danger-button" type="button" aria-label="Delete calendar" title="Delete calendar">⌫</button>
+            <button id="delete-calendar" class="icon-button danger-button" type="button" aria-label="Delete calendar" title="Delete calendar">✕</button>
           </div>
         </div>
         <div class="month-navigation" aria-label="Calendar navigation">
+          <button id="today-button" class="today-button" type="button">Today</button>
           <button id="previous-month" class="nav-button" type="button" aria-label="Previous month">‹</button>
           <h1 id="month-heading" aria-live="polite"></h1>
           <button id="next-month" class="nav-button" type="button" aria-label="Next month">›</button>
-          <button id="today-button" class="today-button" type="button">Today</button>
         </div>
       </div>
 
       <div class="weekday-row" aria-hidden="true">
-        <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+        <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
       </div>
       <div id="calendar-grid" class="calendar-grid" role="grid" aria-labelledby="month-heading"></div>
 
@@ -80,7 +81,7 @@
         <div><p class="eyebrow">MARK THIS DAY</p><h2 id="symbol-date-heading"></h2></div>
         <button class="dialog-close" value="cancel" aria-label="Close">×</button>
       </div>
-      <p class="dialog-copy">Choose one symbol for this date, or remove its mark.</p>
+      <p id="symbol-dialog-copy" class="dialog-copy">Choose one symbol for this date, or remove its mark.</p>
       <div id="symbol-options" class="symbol-options">
         <button type="button" data-symbol="✓" aria-label="Set symbol ✓">✓<span>✓</span></button>
         <button type="button" data-symbol="✕" aria-label="Set symbol ✕">✕<span>✕</span></button>

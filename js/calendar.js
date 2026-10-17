@@ -25,8 +25,8 @@
 
   function gridDates(year, month) {
     const first = new Date(year, month, 1);
-    const mondayOffset = (first.getDay() + 6) % 7;
-    const start = new Date(year, month, 1 - mondayOffset);
+    const sundayOffset = first.getDay();
+    const start = new Date(year, month, 1 - sundayOffset);
     return Array.from({ length: 42 }, (_, index) => new Date(start.getFullYear(), start.getMonth(), start.getDate() + index));
   }
 
@@ -34,9 +34,13 @@
     return dateKey(date) === dateKey(now);
   }
 
+  function isFuture(date, now) {
+    return dateKey(date) > dateKey(now);
+  }
+
   function getSymbol(mark) {
     return typeof mark === "string" ? mark : (mark && typeof mark.symbol === "string" ? mark.symbol : "");
   }
 
-  window.MarkDaysCalendar = { dateKey, parseDateKey, monthTitle, gridDates, isToday, getSymbol };
+  window.MarkDaysCalendar = { dateKey, parseDateKey, monthTitle, gridDates, isToday, isFuture, getSymbol };
 })();

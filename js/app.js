@@ -74,12 +74,14 @@
       const dateString = window.MarkDaysCalendar.dateKey(date);
       const currentMonth = date.getMonth() === displayedMonth && date.getFullYear() === displayedYear;
       const today = window.MarkDaysCalendar.isToday(date, now);
+      const future = window.MarkDaysCalendar.isFuture(date, now);
       const symbol = symbolFor(calendar, dateString);
       const button = document.createElement("button");
       button.type = "button";
-      button.className = `day-cell${currentMonth ? "" : " adjacent"}${today ? " today" : ""}${symbol ? " marked" : ""}`;
+      button.disabled = future && !symbol;
+      button.className = `day-cell${currentMonth ? "" : " adjacent"}${today ? " today" : ""}${symbol ? " marked" : ""}${future ? " future" : ""}`;
       button.setAttribute("role", "gridcell");
-      button.setAttribute("aria-label", `${date.toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" })}${symbol ? `, marked ${symbol}` : ", unmarked"}${today ? ", today" : ""}`);
+      button.setAttribute("aria-label", `${date.toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" })}${symbol ? `, marked ${symbol}` : ", unmarked"}${today ? ", today" : ""}${future ? ", future dates cannot be marked" : ""}`);
       button.dataset.date = dateString;
       const number = document.createElement("span");
       number.className = "day-number";
@@ -92,9 +94,11 @@
       button.addEventListener("click", handleDayClick);
       button.addEventListener("contextmenu", event => {
         event.preventDefault();
+        if (future && !symbol) return;
         openSymbolPicker(dateString);
       });
       button.addEventListener("pointerdown", () => {
+        if (future && !symbol) return;
         longPressTriggered = false;
         longPressTimer = window.setTimeout(() => {
           longPressTriggered = true;
@@ -130,18 +134,21 @@
     }
     const date = event.currentTarget.dataset.date;
     const parsed = window.MarkDaysCalendar.parseDateKey(date);
+    const current = symbolFor(selectedCalendar(), date);
+    if (window.MarkDaysCalendar.isFuture(parsed, new Date()) && !current) return;
     if (parsed.getFullYear() !== displayedYear || parsed.getMonth() !== displayedMonth) {
       displayedYear = parsed.getFullYear();
       displayedMonth = parsed.getMonth();
     }
-    const calendar = selectedCalendar();
-    const current = symbolFor(calendar, date);
     await persistMark(date, current ? null : "✓");
   }
 
   async function persistMark(date, symbol) {
     clearError();
-    const currentCalendar = selectedCalendar();
+    if (symbol !== null && window.MarkDaysCalendar.isFuture(window.MarkDaysCalendar.parseDateKey(date), new Date())) {
+      showError(new Error("Future days cannot be marked."));
+      return;
+    }
     try {
       const updated = await window.MarkDaysStorage.setMark(selectedId, date, symbol);
       calendars = calendars.map(calendar => calendar.id === updated.id ? updated : calendar);
@@ -152,10 +159,17 @@
   }
 
   function openSymbolPicker(date) {
+    const future = window.MarkDaysCalendar.isFuture(window.MarkDaysCalendar.parseDateKey(date), new Date());
+    const isMarked = Boolean(symbolFor(selectedCalendar(), date));
+    if (future && !isMarked) return;
     pendingSymbolDate = date;
     const parsed = window.MarkDaysCalendar.parseDateKey(date);
     elements["symbol-date-heading"].textContent = parsed.toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric", year: "numeric" });
-    elements["remove-mark"].disabled = !symbolFor(selectedCalendar(), date);
+    elements["symbol-dialog-copy"].textContent = future
+      ? "Future days cannot be marked. You can remove this existing mark."
+      : "Choose one symbol for this date, or remove its mark.";
+    document.querySelectorAll("#symbol-options [data-symbol]").forEach(button => { button.disabled = future; });
+    elements["remove-mark"].disabled = !isMarked;
     elements["symbol-dialog"].showModal();
   }
 
@@ -381,7 +395,7 @@
 
   async function start() {
     ["error-message", "status-message", "calendar-select", "month-heading", "calendar-grid",
-      "stat-all", "stat-year", "stat-month", "symbol-date-heading", "symbol-dialog",
+      "stat-all", "stat-year", "stat-month", "symbol-date-heading", "symbol-dialog", "symbol-dialog-copy",
       "remove-mark", "calendar-dialog", "calendar-dialog-title", "calendar-dialog-copy",
       "calendar-dialog-submit", "calendar-dialog-error", "calendar-name-label", "calendar-name-input",
       "import-dialog", "import-summary", "import-file",
