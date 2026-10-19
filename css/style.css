@@ -121,7 +121,11 @@ button:focus-visible, select:focus-visible, input:focus-visible {
 .delete-submit { border-color: #a0443e; background: #a0443e; }
 .delete-submit:hover { background: #843833; }
 .secondary-button { border: 1px solid var(--line); background: white; color: var(--ink); }
-.app-footer { padding: 20px 0 0; text-align: center; font-size: 11px; }
+.app-footer { padding: 20px 0 0; font-size: 13px; line-height: 1.6; color: var(--muted); }
+.app-footer p, .app-footer ol, .app-footer ul { margin: 0 0 12px; }
+.app-footer h2 { margin: 18px 0 8px; color: var(--ink); font-size: 16px; letter-spacing: -.3px; }
+.app-footer ol, .app-footer ul { padding-left: 1.5em; }
+.app-footer strong { color: var(--ink); font-weight: 700; }
 
 .notice { margin: 0 0 12px; padding: 12px 14px; border-radius: 11px; font-size: 13px; line-height: 1.45; }
 .error-notice { color: #762d29; background: #fbecea; border: 1px solid #f0cbc7; }
