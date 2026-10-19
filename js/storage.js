@@ -8,7 +8,7 @@
 
   function openDatabase() {
     if (!("indexedDB" in window)) {
-      return Promise.reject(new Error("This browser does not support IndexedDB, so MarkDays cannot save data."));
+      return Promise.reject(new Error("This browser does not support IndexedDB, so MarkDaysDone cannot save data."));
     }
     if (!databasePromise) {
       databasePromise = new Promise((resolve, reject) => {
@@ -24,7 +24,7 @@
           resolve(db);
         };
         request.onerror = () => reject(request.error || new Error("Could not open local storage."));
-        request.onblocked = () => reject(new Error("MarkDays storage is blocked by another open tab. Close other MarkDays tabs and reload."));
+        request.onblocked = () => reject(new Error("MarkDaysDone storage is blocked by another open tab. Close other MarkDaysDone tabs and reload."));
       });
     }
     return databasePromise;

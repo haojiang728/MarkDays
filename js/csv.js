@@ -76,7 +76,7 @@
     const blob = new Blob([content], { type: "text/csv;charset=utf-8" });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
-    link.download = `MarkDays-${localDate}.csv`;
+    link.download = `MarkDaysDone-${localDate}.csv`;
     document.body.append(link);
     link.click();
     link.remove();

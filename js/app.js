@@ -307,7 +307,7 @@
   async function applyImport() {
     if (!pendingImport) return;
     const mode = document.querySelector('input[name="import-mode"]:checked').value;
-    if (mode === "replace" && !window.confirm("Replace all MarkDays calendars and marks with the data in this file? This cannot be undone.")) return;
+    if (mode === "replace" && !window.confirm("Replace all MarkDaysDone calendars and marks with the data in this file? This cannot be undone.")) return;
     clearError();
     try {
       const imported = pendingImport.map(calendar => ({ ...calendar, id: window.MarkDaysStorage.makeId() }));
@@ -413,7 +413,7 @@
       render();
       if ("serviceWorker" in navigator && window.isSecureContext) {
         navigator.serviceWorker.register("./service-worker.js").catch(error => {
-          console.error("MarkDays offline support could not be enabled:", error);
+          console.error("MarkDaysDone offline support could not be enabled:", error);
           showStatus("Offline support could not be enabled on this visit.");
         });
       }

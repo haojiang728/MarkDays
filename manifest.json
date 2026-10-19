@@ -1,7 +1,7 @@
 {
-  "name": "MarkDays",
-  "short_name": "MarkDays",
-  "description": "A simple, private calendar tracker that works offline.",
+  "name": "MarkDaysDone",
+  "short_name": "MarkDaysDone",
+  "description": "Mark completed days, organize activities into separate calendars, and track your progress.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
