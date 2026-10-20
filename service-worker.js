@@ -1,6 +1,6 @@
 /* Bump this cache name whenever a shell asset changes. Installation is all-or-nothing;
    old caches remain available until a replacement worker activates successfully. */
-const CACHE_NAME = "markdays-shell-v6";
+const CACHE_NAME = "markdays-shell-v7";
 const ASSETS = [
   "./",
   "./index.html",
